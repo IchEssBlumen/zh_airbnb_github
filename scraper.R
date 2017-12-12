@@ -26,7 +26,7 @@ df <- subset(testlist$search_results$listing, select=c("id","room_type","lat","l
 # if the loop breaks, just restart from the last postalcode (lastplz)
 
 #the baseurl to be dynamically modified within the loop (parameters: postal codes and price categories)
-baseurl <- "https://api.airbnb.com/v2/search_results?client_id=3092nxybyb0otqw18e8nh5nty&_limit=50&fetch_facets=true&guests=1&ib=false&sort=1&locale=de-CH&&zoom=10"
+baseurl <- "https://api.airbnb.com/v2/search_results?client_id=3092nxybyb0otqw18e8nh5nty&_limit=50&fetch_facets=true&ib=false&sort=1&locale=de-CH&&zoom=10"
 
 
 lastplz <- 1
@@ -57,10 +57,10 @@ for (plz in lastplz:nrow(ortzh)){
       lastplz <-plz
       
       #add the retrieved listings to the listings-dataframe incrementally
-        if (exists("zhdf")){ zhdfplz<- rbind(zhdf,zhdf2)} else { zhdfplz <- zhdf2  } 
- 
-     #message
-  message("Retrieving listings ", i, " max price:", p, " PLZ:  ", ortzh$PLZ4[lastplz], ", NUMBER of listings retrived: ", nrow(zhdf))
+      if (exists("zhdfplz")){ zhdfplz<- rbind(zhdfplz,zhdf2)} else { zhdfplz <- zhdf2  } 
+      
+      #message
+      message("Retrieving listings ", i, " max price:", p, " PLZ:  ", ortzh$PLZ4[lastplz], ", NUMBER of listings retrived: ", nrow(zhdfplz))
       
       #break the loop if the last result page has been reached
       if (zhlist$metadata$listings_count == zhlist$metadata$pagination$next_offset){break}
@@ -96,11 +96,10 @@ for (lat in c(0,1)){
         zhdf1$geo <- lat
         row.names(zhdf1) <- NULL
         
-        message("Retrieving listings ", i, " max price:", p, " guests: ", g, ", NUMBER of listings retrived: ", nrow(zhdf))
         
-        if (!zhdf){zhdf <- zhdf1 } else {
-          zhdf<- rbind(zhdf,zhdf1)
-        }
+        if (exists("zhdfplz2")){ zhdfplz<- rbind(zhdfplz2,zhdf1)} else { zhdfplz2 <- zhdf1  } 
+        
+        message("Retrieving listings ", i, " max price:", p, " guests: ", g, ", NUMBER of listings retrived: ", nrow(zhdfplz2))
         
         if (zhlist$metadata$listings_count == zhlist$metadata$pagination$next_offset){break}  
         
